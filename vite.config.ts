@@ -4,23 +4,18 @@ import angular from '@analogjs/vite-plugin-angular';
 export default defineConfig({
   plugins: [
     angular({
-      tsconfig: './tsconfig.json',
-      jit: true
+      tsconfig: './tsconfig.app.json'
     })
   ],
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: 'esbuild',
-    rollupOptions: {
-      input: ['index.html']
-    }
+    minify: 'esbuild'
   },
   server: {
     port: 3000
   },
   define: {
-    'process.env': {},
     global: 'globalThis'
   }
 });
