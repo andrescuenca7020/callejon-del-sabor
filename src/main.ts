@@ -1,8 +1,7 @@
 import './polyfills';
-import { enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter, Routes } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { AppComponent } from './app.component';
 
@@ -23,15 +22,26 @@ const routes: Routes = [
   { path: 'inventario', component: InventarioPage }
 ];
 
-enableProdMode();
-
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withFetch()),
-    {
-      provide: IonicModule,
-      useFactory: () => IonicModule.forRoot({ mode: 'ios' })
-    }
+    provideHttpClient(),
+    IonicModule.forRoot({ mode: 'ios' })
   ]
-}).catch(err => console.error(err));
+}).then(() => {
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.style.opacity = '0';
+    loading.style.transition = 'opacity 0.3s';
+    setTimeout(() => loading.style.display = 'none', 300);
+  }
+}).catch(err => {
+  console.error('Bootstrap error:', err);
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.innerHTML = `
+      <h1 style="color: #dc2626; margin-top: 24px;">Error al cargar</h1>
+      <p style="color: #f87171;">${err.message}</p>
+    `;
+  }
+});

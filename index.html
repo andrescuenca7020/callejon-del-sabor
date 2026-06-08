@@ -7,94 +7,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Callejón del Sabor - POS</title>
-    <link rel="manifest" href="/manifest.json" />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-
+      * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body {
         height: 100%;
-        width: 100%;
-        overflow: hidden;
         background: #0f172a;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        touch-action: manipulation;
-      }
-
-      ion-app {
-        --ion-background-color: transparent;
-      }
-
-      /* Safe area insets for notched devices */
-      ion-content {
-        --padding-top: env(safe-area-inset-top);
-        --padding-bottom: env(safe-area-inset-bottom);
-      }
-
-      /* Hide scrollbar */
-      ::-webkit-scrollbar {
-        display: none;
-      }
-
-      /* Loading spinner */
-      .app-loading {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        z-index: 9999;
-      }
-
-      .app-loading h1 {
-        color: #fff;
-        margin-top: 24px;
-        font-size: 1.5rem;
-      }
-
-      .app-loading p {
-        color: #64748b;
-        margin-top: 8px;
-      }
-
-      .spinner {
-        width: 48px;
-        height: 48px;
-        border: 4px solid rgba(37, 99, 235, 0.3);
-        border-top-color: #2563eb;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        to { transform: rotate(360deg); }
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       }
     </style>
   </head>
   <body>
-    <ion-app>
-      <div class="app-loading" id="loading">
-        <div class="spinner"></div>
-        <h1>Callejón del Sabor</h1>
-        <p>Cargando sistema POS...</p>
-      </div>
-      <ion-router-outlet id="router-outlet"></ion-router-outlet>
-    </ion-app>
+    <app-root></app-root>
     <script type="module" src="/src/main.ts"></script>
-    <script>
-      // Hide loading when app is ready
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          const loading = document.getElementById('loading');
-          if (loading) loading.style.display = 'none';
-        }, 1500);
-      });
-    </script>
   </body>
 </html>

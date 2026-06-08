@@ -1,7 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
+import {
+  IonContent,
+  IonButton,
+  IonIcon,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonInput,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonSelect,
+  IonSelectOption,
+  IonList,
+  IonItem
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  cartOutline, listOutline, addOutline, removeOutline, closeOutline,
+  trashOutline, checkmarkCircleOutline
+} from 'ionicons/icons';
 import { ProductService } from '../../services/product.service';
 import { OrderService } from '../../services/order.service';
 import { Category, Product, CartItem } from '../../models/index';
@@ -9,18 +32,32 @@ import { Category, Product, CartItem } from '../../models/index';
 @Component({
   selector: 'app-pos',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonSegment,
+    IonSegmentButton,
+    IonLabel,
+    IonInput,
+    IonModal,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons
+  ],
   template: `
     <ion-content class="pos-container">
       <!-- Header -->
       <div class="header">
         <h1>Callejón del Sabor</h1>
-        <div class="header-actions">
-          <ion-button color="dark" routerLink="/pedidos">
-            <ion-icon name="list-outline" slot="start"></ion-icon>
-            Pedidos Activos
-          </ion-button>
-        </div>
+        <ion-button color="dark" [routerLink]="['/pedidos']">
+          <ion-icon name="list-outline" slot="start"></ion-icon>
+          Pedidos
+        </ion-button>
       </div>
 
       <!-- Categories -->
@@ -42,7 +79,7 @@ import { Category, Product, CartItem } from '../../models/index';
             (click)="product.stock > 0 && addToCartQuick(product)"
           >
             <span class="product-name">{{ product.name }}</span>
-            <span class="product-price">\${{ product.price.toFixed(2) }}</span>
+            <span class="product-price">$ {{ product.price | number:'1.2-2' }}</span>
             <span class="product-stock" [class.low]="product.stock <= 5">
               {{ product.stock > 0 ? 'Stock: ' + product.stock : 'AGOTADO' }}
             </span>
@@ -100,13 +137,13 @@ import { Category, Product, CartItem } from '../../models/index';
                 <ion-icon name="close-outline"></ion-icon>
               </ion-button>
             </div>
-            <div class="item-price">\${{ item.subtotal.toFixed(2) }}</div>
+            <div class="item-price">$ {{ item.subtotal | number:'1.2-2' }}</div>
           </div>
         </div>
 
         <div class="cart-total">
           <span>Total:</span>
-          <span class="total-amount">\${{ cartTotal.toFixed(2) }}</span>
+          <span class="total-amount">$ {{ cartTotal | number:'1.2-2' }}</span>
         </div>
 
         <ion-button
@@ -134,9 +171,9 @@ import { Category, Product, CartItem } from '../../models/index';
           </ion-header>
           <ion-content class="modal-content">
             <div class="modal-product-info">
-              <h2>\${{ selectedProduct?.price.toFixed(2) }}</h2>
+              <h2>$ {{ selectedProduct?.price | number:'1.2-2' }}</h2>
               <p *ngIf="selectedProduct?.category_id === 1 && selectedProduct?.name !== 'Choclo Asado'">
-                Para llevar suma \$0.25 por envase
+                Para llevar suma $0.25 por envase
               </p>
             </div>
             <div class="modal-quantity">
@@ -158,7 +195,7 @@ import { Category, Product, CartItem } from '../../models/index';
                 size="large"
                 (click)="closeTakeawayModal(true, false)"
               >
-                Para Comer Aquí
+                Para Comer Aqui
               </ion-button>
               <ion-button
                 expand="block"
@@ -166,7 +203,7 @@ import { Category, Product, CartItem } from '../../models/index';
                 size="large"
                 (click)="closeTakeawayModal(true, true)"
               >
-                Para Llevar (+\$0.25)
+                Para Llevar (+$0.25)
               </ion-button>
             </div>
             <div class="modal-options" *ngIf="selectedProduct?.category_id !== 1">
@@ -191,7 +228,6 @@ import { Category, Product, CartItem } from '../../models/index';
       --success: #059669;
       --warning: #f59e0b;
       --danger: #dc2626;
-      --light: #f8fafc;
       --gray: #64748b;
     }
 
@@ -205,7 +241,6 @@ import { Category, Product, CartItem } from '../../models/index';
       align-items: center;
       padding: 16px 20px;
       background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -226,16 +261,6 @@ import { Category, Product, CartItem } from '../../models/index';
       background: rgba(0, 0, 0, 0.3);
       border-radius: 12px;
       padding: 4px;
-    }
-
-    .category-segment ion-segment-button {
-      --color: #94a3b8;
-      --color-checked: #fff;
-      --indicator-color: var(--primary);
-      --indicator-box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-      border-radius: 8px;
-      min-height: 40px;
-      font-weight: 600;
     }
 
     .products-section {
@@ -260,11 +285,13 @@ import { Category, Product, CartItem } from '../../models/index';
       min-height: 120px;
       cursor: pointer;
       transition: all 0.2s ease;
+      border: none;
+      text-align: center;
     }
 
     .product-card:hover:not(.agotado) {
       transform: translateY(-2px);
-      border-color: var(--primary);
+      border: 1px solid var(--primary);
       box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
     }
 
@@ -277,12 +304,11 @@ import { Category, Product, CartItem } from '../../models/index';
       color: #fff;
       font-size: 0.9rem;
       font-weight: 600;
-      text-align: center;
       margin-bottom: 8px;
     }
 
     .product-price {
-      color: var(--primary);
+      color: #3b82f6;
       font-size: 1.25rem;
       font-weight: 700;
     }
@@ -336,11 +362,12 @@ import { Category, Product, CartItem } from '../../models/index';
     }
 
     .table-badge {
-      background: var(--primary);
+      background: #3b82f6;
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
+      color: #fff;
     }
 
     .order-type-switch {
@@ -389,7 +416,7 @@ import { Category, Product, CartItem } from '../../models/index';
     }
 
     .takeaway-badge {
-      background: var(--warning);
+      background: #f59e0b;
       color: #000;
       font-size: 0.7rem;
       padding: 2px 6px;
@@ -409,7 +436,7 @@ import { Category, Product, CartItem } from '../../models/index';
     }
 
     .item-price {
-      color: var(--primary);
+      color: #3b82f6;
       font-weight: 600;
       margin-left: auto;
       min-width: 60px;
@@ -435,9 +462,9 @@ import { Category, Product, CartItem } from '../../models/index';
       font-weight: 700;
     }
 
-    /* Modal Styles */
     .modal-content {
       padding: 24px;
+      --background: #1e293b;
     }
 
     .modal-product-info {
@@ -446,7 +473,7 @@ import { Category, Product, CartItem } from '../../models/index';
     }
 
     .modal-product-info h2 {
-      color: var(--primary);
+      color: #3b82f6;
       font-size: 2.5rem;
       margin: 0;
     }
@@ -490,12 +517,6 @@ import { Category, Product, CartItem } from '../../models/index';
       flex-direction: column;
       gap: 12px;
     }
-
-    .modal-options ion-button {
-      --border-radius: 12px;
-      height: 56px;
-      font-weight: 600;
-    }
   `]
 })
 export class PosPage implements OnInit {
@@ -507,7 +528,6 @@ export class PosPage implements OnInit {
   orderType: 'Local' | 'Llevar' = 'Local';
   tableNumber: string = '';
 
-  // Modal
   showTakeawayModal = false;
   selectedProduct: Product | null = null;
   modalQty = 1;
@@ -515,7 +535,9 @@ export class PosPage implements OnInit {
   constructor(
     private productService: ProductService,
     private orderService: OrderService
-  ) {}
+  ) {
+    addIcons({ cartOutline, listOutline, addOutline, removeOutline, closeOutline, trashOutline, checkmarkCircleOutline });
+  }
 
   async ngOnInit() {
     await this.productService.loadInitialData();
@@ -538,14 +560,11 @@ export class PosPage implements OnInit {
 
   addToCartQuick(product: Product) {
     if (product.stock <= 0) return;
-
-    // For main dishes, show modal to select takeaway option
     if (product.category_id === 1) {
       this.selectedProduct = product;
       this.modalQty = 1;
       this.showTakeawayModal = true;
     } else {
-      // For other categories, add directly
       this.orderService.addToCart(product, 1, false);
     }
   }
@@ -563,7 +582,7 @@ export class PosPage implements OnInit {
     const newQty = this.cart[index].quantity + delta;
     if (newQty > 0) {
       this.orderService.updateCartItemQuantity(index, newQty);
-    } else if (newQty <= 0) {
+    } else {
       this.removeItem(index);
     }
   }
@@ -589,7 +608,6 @@ export class PosPage implements OnInit {
       this.clearCart();
       this.tableNumber = '';
       this.orderType = 'Local';
-      // Navigate to active orders
       window.location.href = '/pedidos';
     }
   }
